@@ -12,18 +12,22 @@ public class MyGameManager : MonoBehaviour
     public Color tankTwoColor;
 
     public MyCamera camerControl;
-    public AudioManager audioManager;
+
+    //全局bgm音效
+    public AudioSource TankBgmAudio;
+    public AudioClip m_TankBgm;
 
     // Start is called before the first frame update
     void Start()
     {
-       
-        
+
+        BgmStart();
         TankSpawn();
         if (camerControl != null)
         {
             camerControl.tanks = GameObject.FindGameObjectsWithTag("Player");
         }
+
     }
 
     // Update is called once per frame
@@ -61,5 +65,14 @@ public class MyGameManager : MonoBehaviour
             }
         }
 
+    }
+
+    //播放游戏bgm
+    void BgmStart()
+    {
+        TankBgmAudio.clip = m_TankBgm;
+        TankBgmAudio.loop = true;
+        TankBgmAudio.volume = 0.2f;
+        TankBgmAudio.Play();
     }
 }

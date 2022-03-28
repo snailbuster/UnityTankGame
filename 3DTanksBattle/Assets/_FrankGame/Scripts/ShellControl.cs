@@ -12,20 +12,13 @@ public class ShellControl : MonoBehaviour
     //Damage
     public float MaxDamge = 5;
 
-    //music
-    public AudioSource shellFireAudio;
-    public AudioSource shellExplosionAudio;
+    //“Ù–ß
+    public AudioClip m_ShellExploAudio;
 
     // Start is called before the first frame update
     void Start()
     {
-        //if (shellFireAudio != null)
-        //{
-        //    if (!shellFireAudio.isPlaying)
-        //    {
-        //        shellFireAudio.Play();
-        //    }
-        //}
+        
     }
 
     // Update is called once per frame
@@ -54,24 +47,19 @@ public class ShellControl : MonoBehaviour
             }
             
         }
-
-
-        //if (shellExplosionAudio != null)
-        //{
-        //    if (!shellExplosionAudio.isPlaying)
-        //    {
-        //        shellExplosionAudio.Play();
-        //    }
-        //}
-
-        //±¨’®
-        //AudioManager._audioManagerInstance.shellExplosionAudioPlay();
         shellExplosion.transform.parent = null;
         if (shellExplosion != null)
         {
+            ShellExplosionAudio();//“Ù–ß
             shellExplosion.Play();
             Destroy(shellExplosion, shellExplosion.main.duration);
         }
         Destroy(this.gameObject);
+    }
+
+    //◊”µØ±¨’®“Ù–ß
+    private void ShellExplosionAudio()
+    {
+        AudioSource.PlayClipAtPoint(m_ShellExploAudio, Camera.main.transform.position);
     }
 }

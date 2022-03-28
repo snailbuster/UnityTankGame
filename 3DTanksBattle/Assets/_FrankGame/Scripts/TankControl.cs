@@ -42,10 +42,20 @@ public class TankControl : MonoBehaviour
     public ParticleSystem tankExplosion;
     public AudioSource tankFire;
 
+    //音效
+    public AudioSource m_TankAudio;         // Reference to the audio source used to play engine sounds. NB: different to the shooting audio source.
+    public AudioClip m_EngineIdling;            // Audio to play when the tank isn't moving.
+    public AudioClip m_EngineDriving;           // Audio to play when the tank is moving.
+    public AudioSource m_TankShootAudio;
+    public AudioClip m_TankFire;
+    
+
     // Start is called before the first frame update
     void Start()
     {
-        TankInitilization(); 
+        TankInitilization();
+        AudioStart();
+        
     }
 
     void TankInitilization()
@@ -59,6 +69,7 @@ public class TankControl : MonoBehaviour
         //初始化slider
         hpSlider.maxValue = HP;
         hpSlider.value = HP;
+
     }
 
     // Update is called once per frame
@@ -66,13 +77,22 @@ public class TankControl : MonoBehaviour
     //Vertical1  sw
     void Update()
     {
+        TankMove(); //坦克移动
+
+
+    }
+
+    //功能：坦克移动
+    private void TankMove()
+    {
         h_Value = Input.GetAxis(inputHorizontalStr);
         v_Value = Input.GetAxis(inputVerticalStr);
+        EngineAudio(h_Value, v_Value); //移动音效
 
         //move
         if (v_Value != 0)
         {
-            _rigidbody.MovePosition(this.transform.position + v_Value*this.transform.forward * speed * Time.deltaTime);
+            _rigidbody.MovePosition(this.transform.position + v_Value * this.transform.forward * speed * Time.deltaTime);
         }
         if (h_Value != 0)
         {
@@ -82,7 +102,7 @@ public class TankControl : MonoBehaviour
             }
             this.gameObject.transform.Rotate(Vector3.up * h_Value * rotateSpeed * Time.deltaTime);
         }
-        
+
 
         if (Input.GetButton(inputFireStr))
         {
@@ -98,10 +118,9 @@ public class TankControl : MonoBehaviour
             OpenFire(currentSpeed);
             currentSpeed = 10;
         }
-
-
     }
 
+    //功能：坦克开火
     void OpenFire(float shellSpeed)
     {
 
@@ -110,6 +129,7 @@ public class TankControl : MonoBehaviour
         Rigidbody shellRigidbody = shellObj.GetComponent<Rigidbody>();
         if (shellRigidbody != null)
         {
+            TankFireAudio();//开火音效
             shellRigidbody.velocity = shellPos.forward * shellSpeed;
         }
 
@@ -134,6 +154,40 @@ public class TankControl : MonoBehaviour
             this.gameObject.SetActive(false);
         }
 
+    }
+
+    //声音初始化
+    public void AudioStart()
+    {
+        m_TankAudio.clip = m_EngineDriving;
+        m_TankAudio.spatialBlend = 0;
+        m_TankAudio.pitch = 0.9f;
+        m_TankAudio.loop = true;
+        m_TankAudio.volume = 0;
+        m_TankAudio.Play();
+
+   
+    }
+
+    //移动音效
+    private void EngineAudio(float h_value, float v_value)
+    {
+        if (Mathf.Abs(h_value) > 0.1f || Mathf.Abs(v_value) > 0.1f)
+        {
+            m_TankAudio.volume = 0.1f;
+        }
+        else
+        {
+            m_TankAudio.volume -= 0.1f;
+            m_TankAudio.volume = Mathf.Max(0, m_TankAudio.volume);
+        }
+        
+    }
+
+    //开火音效
+    private void TankFireAudio()
+    {
+        AudioSource.PlayClipAtPoint(m_TankFire, Camera.main.transform.position);
     }
 
 }
