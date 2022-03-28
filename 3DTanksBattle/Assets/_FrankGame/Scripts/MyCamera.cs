@@ -13,6 +13,8 @@ public class MyCamera : MonoBehaviour
     public float smoothTime = 0.1f;
     public float maxSmoothSpeed = 2;
     public float sizeOffset = 4;
+
+    public float minsize = 14;
     // Start is called before the first frame update
     void Start()
     {
@@ -57,6 +59,6 @@ public class MyCamera : MonoBehaviour
             size = Mathf.Max(size,x_Value / mainCamera.aspect);
         }
         size += sizeOffset;
-        mainCamera.orthographicSize = size;
+        mainCamera.orthographicSize = Mathf.Max(size, minsize);
     }
 }
